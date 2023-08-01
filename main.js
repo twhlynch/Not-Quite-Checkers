@@ -52,6 +52,9 @@ function getChecker(row, col) {
 
 document.addEventListener("click", function (event) {
     var isTile = event.target.classList.contains("tile");
+    if (!isTile) {
+        return false;
+    }
 
     var id = event.target.id;
     var row = id.split("-")[0];
@@ -59,11 +62,12 @@ document.addEventListener("click", function (event) {
     var info = getChecker(row, col);
     console.log(info);
 
-    Array.from(document.getElementsByClassName("option")).forEach(function (element) {
-        element.classList.remove("option");
-    });
-
+    
     if (info.isChecker) {
+        Array.from(document.getElementsByClassName("option")).forEach(function (element) {
+            element.classList.remove("option");
+        });
+        info.element.classList.add("option");
         // 3 by 3 grid + jump selections
         for (let x = -1; x < 2; x++) {
             for (y = -1; y < 2; y++) {
@@ -78,7 +82,13 @@ document.addEventListener("click", function (event) {
                 }
             }
         }
+    } else if (event.target.classList.contains("option") && !info.isChecker) {
+        var origin = document.querySelector(".checker.option");
+        let originClassName = origin.className;
+        origin.className = event.target.className;
+        event.target.className = originClassName;        
     }
 });
+
 
 createBoard();
