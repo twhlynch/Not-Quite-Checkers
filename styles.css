@@ -1,0 +1,114 @@
+body, html {
+    display: grid;
+    place-content: center;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+}
+#board {
+    margin: auto;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+}
+.tile {
+    width: 5rem;
+    height: 5rem;
+    display: grid;
+    place-content: center;
+    max-width: calc(100vw / 8);
+    max-height: calc(100vh / 8);
+}
+.white {
+    background-color: #ccc;
+    color: #ccc;
+}
+.black {
+    background-color: #1e1e1e;
+    color: #1e1e1e;
+}
+.option {
+    background-color: #e3b444;
+}
+.checker::after {
+    content: "";
+    position: relative;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    width: 4rem;
+    height: 4rem;
+}
+.light::after {
+    background-color: #e3b444;
+}
+.dark::after {
+    background-color: #e36444;
+}
+.king::after {
+    border: 3px #999999 solid;
+}
+@media screen and (max-width: 640px){
+    .tile {
+        width: 4rem;
+        height: 4rem;
+    }
+    .checker::after {
+        width: 3rem;
+        height: 3rem;
+    }
+}
+@media screen and (max-height: 640px){
+    .tile {
+        width: 4rem;
+        height: 4rem;
+    }
+    .checker::after {
+        width: 3rem;
+        height: 3rem;
+    }
+}
+@media screen and (max-height: 512px){
+    .tile {
+        width: 3rem;
+        height: 3rem;
+    }
+    .checker::after {
+        width: 2rem;
+        height: 2rem;
+    }
+}
+
+@media screen and (max-width: 512px){
+    .tile {
+        width: 3rem;
+        height: 3rem;
+    }
+    .checker::after {
+        width: 2rem;
+        height: 2rem;
+    }
+}
+@media screen and (max-height: 384px){
+    .tile {
+        width: 2rem;
+        height: 2rem;
+    }
+    .checker::after {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 384px){
+    .tile {
+        width: 2rem;
+        height: 2rem;
+    }
+    .checker::after {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+}
