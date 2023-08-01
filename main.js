@@ -57,23 +57,28 @@ document.addEventListener("click", function (event) {
     var row = id.split("-")[0];
     var col = id.split("-")[1];
     var info = getChecker(row, col);
+    console.log(info);
 
     Array.from(document.getElementsByClassName("option")).forEach(function (element) {
         element.classList.remove("option");
     });
 
     if (info.isChecker) {
-        // 3 by 3 grid
+        // 3 by 3 grid + jump selections
         for (let x = -1; x < 2; x++) {
             for (y = -1; y < 2; y++) {
                 let target = getChecker(parseInt(row) + x, parseInt(col) + y);
-                if (target && target.isLight != info.isLight) {
+                if (target && (target.isLight != info.isLight || !target.isChecker)) {
                     target.element.classList.add("option");
+                } else if (target.isChecker && x != 0 && y != 0) {
+                    let jump = getChecker(parseInt(row) + (x * 2), parseInt(col) + (y * 2));
+                    if (jump && (jump.isLight != info.isLight || !jump.isChecker)) {
+                        jump.element.classList.add("option");
+                    }
                 }
             }
         }
     }
-
 });
 
 createBoard();
