@@ -31,7 +31,7 @@ body, html {
     color: #1e1e1e;
 }
 .option, .jump {
-    box-shadow: inset 0 0 10px 0.5rem #e3b444;
+    box-shadow: inset 0 0 10px 0.25rem #e3b444;
 }
 .checker::after {
     content: "";
@@ -43,7 +43,7 @@ body, html {
     height: 4rem;
 }
 .light::after {
-    background-color: #e3b444;
+    background-color: #e6bc5b;
 }
 .dark::after {
     background-color: #e36444;
@@ -68,24 +68,24 @@ body, html {
 .card {
     background: #946646;
     border: 5px solid #61432d;
-    width: 24rem;
-    height: 4rem;
+    width: 12rem;
+    height: 2rem;
     color: #f7c899;
     font-size: 36px;
     text-align: center;
-    line-height: 4rem;
+    line-height: 2rem;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     cursor: pointer;
 }
 
 .Alternate_dimension::after {
-    box-shadow: inset 0 0 10px 0.5rem #000000;
+    box-shadow: inset 0 0 10px 0.25rem #000000;
 }
 .Dodge::after {
-    box-shadow: inset 0 0 10px 0.5rem #fdffa0;
+    box-shadow: inset 0 0 10px 0.25rem #fdffa0;
 }
 .Explode::after {
-    box-shadow: inset 0 0 10px 0.5rem #8c0e00;
+    box-shadow: inset 0 0 10px 0.25rem #8c0e00;
 }
 
 @media screen and (max-width: 640px){
