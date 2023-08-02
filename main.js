@@ -68,6 +68,9 @@ document.addEventListener("click", function (event) {
         Array.from(document.getElementsByClassName("option")).forEach(function (element) {
             element.classList.remove("option");
         });
+        Array.from(document.getElementsByClassName("jump")).forEach(function (element) {
+            element.classList.remove("jump");
+        });
         info.element.classList.add("option");
         // 3 by 3 grid + jump selections
         movement = [-1, 1, -1, 1];
@@ -87,6 +90,7 @@ document.addEventListener("click", function (event) {
                     let jump = getChecker(parseInt(row) + (x * 2), parseInt(col) + (y * 2));
                     if (jump && !jump.isChecker) {
                         jump.element.classList.add("option");
+                        jump.element.classList.add("jump");
                     }
                 }
             }
@@ -108,6 +112,18 @@ document.addEventListener("click", function (event) {
                 event.target.classList.add(el);
             }
         });
+        if (event.target.classList.contains("jump")) {
+            var jumpPos = event.target.id.split("-").map((el) => parseInt(el));
+            var originPos = origin.id.split("-").map((el) => parseInt(el));
+            // get midpoint
+            var jumpedPos = [(jumpPos[0] + originPos[0]) / 2, (jumpPos[1] + originPos[1]) / 2];
+            var jumped = getChecker(jumpedPos[0], jumpedPos[1]);
+            ["king", "checker", "light", "dark"].forEach((el) => {
+                if (jumped.element.classList.contains(el)) {
+                    jumped.element.classList.remove(el);
+                }
+            })
+        }
         Array.from(document.getElementsByClassName("option")).forEach(function (element) {
             element.classList.remove("option");
         });
