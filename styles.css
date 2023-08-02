@@ -51,6 +51,43 @@ body, html {
 .king::after {
     border: 3px #999999 solid;
 }
+
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    z-index: 2;
+}
+.card {
+    background: #946646;
+    border: 5px solid #61432d;
+    width: 24rem;
+    height: 4rem;
+    color: #f7c899;
+    font-size: 36px;
+    text-align: center;
+    line-height: 4rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    cursor: pointer;
+}
+
+.Alternate_dimension::after {
+    box-shadow: inset 0 0 10px 0.5rem #000000;
+}
+.Dodge::after {
+    box-shadow: inset 0 0 10px 0.5rem #fdffa0;
+}
+.Explode::after {
+    box-shadow: inset 0 0 10px 0.5rem #8c0e00;
+}
+
 @media screen and (max-width: 640px){
     .tile {
         width: 4rem;

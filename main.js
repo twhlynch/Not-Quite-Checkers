@@ -1,10 +1,12 @@
-var modifiers = {
-    "twoTurns": false,
-    "dodge": false,
-    "explode": false
-};
+var modifiers = [
+    "Alternate_dimension",
+    "Dodge",
+    "Explode",
+];
+
 var turn = true;
 var jumpTurn = false;
+const overlay = document.getElementById("overlay");
 
 function createBoard() {
     // 8x8 board
@@ -115,25 +117,84 @@ function moveChecker(checker, row, col) {
             checker.classList.add(el);
         }
     });
+    modifiers.forEach((el) => {
+        if (origin.classList.contains(el)) {
+            origin.classList.remove(el);
+            checker.classList.add(el);
+        }
+    });
     jumpTurn = false;
     if (checker.classList.contains("jump")) {
+        
         var jumpPos = checker.id.split("-").map((el) => parseInt(el));
         var originPos = origin.id.split("-").map((el) => parseInt(el));
         // get midpoint
         var jumpedPos = [(jumpPos[0] + originPos[0]) / 2, (jumpPos[1] + originPos[1]) / 2];
         var jumped = getChecker(jumpedPos[0], jumpedPos[1]);
-        ["king", "checker", "light", "dark"].forEach((el) => {
-            if (jumped.element.classList.contains(el)) {
-                jumped.element.classList.remove(el);
+        if (!jumped.element.classList.contains("Dodge")) {
+            ["king", "checker", "light", "dark"].forEach((el) => {
+                if (jumped.element.classList.contains(el)) {
+                    jumped.element.classList.remove(el);
+                }
+            });
+        }
+        // take modifiers
+        if (jumped.element.classList.contains("Explode")) {
+            var explodePos = jumped.element.id.split("-").map((el) => parseInt(el));
+            for (let x = -1; x <= 1; x++) {
+                for (let y = -1; y <= 1; y++) {
+                    let target = getChecker(explodePos[0] + x, explodePos[1] + y);
+                    if (target && target.isChecker && target.isLight != jumped.isLight) {
+                        ["king", "checker", "light", "dark"].forEach((el) => {
+                            if (target.element.classList.contains(el)) {
+                                target.element.classList.remove(el);
+                            }
+                        });
+                        modifiers.forEach((el) => {
+                            if (target.element.classList.contains(el)) {
+                                target.element.classList.remove(el);
+                            }
+                        });
+                    }
+                }
             }
-        })
-        jumpTurn = true;
-        turn = (turn ? false : true);
-        createMoveOptions(getChecker(jumpPos[0], jumpPos[1]), row, col);
+        }
+
+        if (Math.random() < 0.3) {
+            overlay.style.display = "flex";
+            // 3 random modifiers no repeats
+            
+            var rand = Math.floor(Math.random() * modifiers.length);
+            var rand2 = Math.floor(Math.random() * modifiers.length);
+            var rand3 = Math.floor(Math.random() * modifiers.length);
+            while (rand2 == rand) {
+                rand2 = Math.floor(Math.random() * modifiers.length);
+            }
+            while (rand3 == rand || rand3 == rand2) {
+                rand3 = Math.floor(Math.random() * modifiers.length);
+            }
+            var chosenModifiers = [modifiers[rand], modifiers[rand2], modifiers[rand3]];
+            for (let i = 0; i < chosenModifiers.length; i++) {
+                const card = overlay.children[i];
+                card.id = checker.classList.contains("light") ? "light" : "dark";
+                card.innerText = chosenModifiers[i];
+            }
+
+        }
+        if (!jumped.element.classList.contains("Dodge") && !jumped.element.classList.contains("Explode")) {
+            jumpTurn = true;
+            turn = (turn ? false : true);
+            createMoveOptions(getChecker(jumpPos[0], jumpPos[1]), row, col);
+        } else if (jumped.element.classList.contains("Dodge")) {
+            jumped.element.classList.remove("Dodge");
+        }
     }
     if (!jumpTurn) {
         Array.from(document.getElementsByClassName("option")).forEach(function (element) {
             element.classList.remove("option");
+        });
+        Array.from(document.getElementsByClassName("jump")).forEach(function (element) {
+            element.classList.remove("jump");
         });
     }
 }
@@ -141,6 +202,30 @@ function moveChecker(checker, row, col) {
 document.addEventListener("click", function (event) {
     var isTile = event.target.classList.contains("tile");
     if (!isTile) {
+        if (event.target.className == "card") {
+            overlay.style.display = "none";
+            let allCheckers = Array.from(document.getElementsByClassName(event.target.id));
+            let randomChecker = allCheckers[Math.floor(Math.random() * allCheckers.length)];
+            randomChecker.classList.add(event.target.innerText);
+            // apply modifiers
+            if (event.target.innerText == "Alternate_dimension") {
+                let originPosition = randomChecker.id.split("-").map((el) => parseInt(el))
+                originPosition[0] = (originPosition[0] == 7 ? originPosition[0] - 1 : originPosition[0] + 1);
+                let modifiedChecker = getChecker(originPosition[0], originPosition[1]);
+                ["king", "checker", "light", "dark"].forEach((el) => {
+                    if (randomChecker.classList.contains(el)) {
+                        randomChecker.classList.remove(el);
+                        modifiedChecker.element.classList.add(el);
+                    }
+                });
+                modifiers.forEach((el) => {
+                    if (randomChecker.classList.contains(el)) {
+                        randomChecker.classList.remove(el);
+                        modifiedChecker.element.classList.add(el);
+                    }
+                });
+            }
+        }
         return false;
     }
 
