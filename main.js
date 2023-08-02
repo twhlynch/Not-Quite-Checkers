@@ -3,6 +3,7 @@ var modifiers = {
     "dodge": false,
     "explode": false
 };
+var turn = true;
 
 function createBoard() {
     // 8x8 board
@@ -12,7 +13,7 @@ function createBoard() {
             tile.setAttribute("id", i + "-" + j);
             tile.classList.add("tile");
             // checkers
-            if (i <= 1 || i >= 6) {
+            if ((i <= 2 || i >= 5) && (i + j) % 2 === 0) {
                 tile.classList.add("checker");
             }
             // colors
@@ -21,9 +22,9 @@ function createBoard() {
             } else {
                 tile.classList.add('black');
             }
-            if (i <= 1) {
+            if (i <= 2 && (i + j) % 2 === 0) {
                 tile.classList.add("light");
-            } else if (i >= 6) {
+            } else if (i >= 5 && (i + j) % 2 === 0) {
                 tile.classList.add("dark");
             }
             document.getElementById("board").appendChild(tile);
@@ -63,20 +64,28 @@ document.addEventListener("click", function (event) {
     console.log(info);
 
     
-    if (info.isChecker) {
+    if (info.isChecker && info.isLight == turn) {
         Array.from(document.getElementsByClassName("option")).forEach(function (element) {
             element.classList.remove("option");
         });
         info.element.classList.add("option");
         // 3 by 3 grid + jump selections
-        for (let x = -1; x < 2; x++) {
-            for (y = -1; y < 2; y++) {
+        movement = [-1, 1, -1, 1];
+        if (!info.isKing) {
+            if (info.isDark) {
+                movement[1] = 0;
+            } else {
+                movement[0] = 0;
+            }
+        }
+        for (let x = movement[0]; x <= movement[1]; x++) {
+            for (y = movement[2]; y <= movement[3]; y++) {
                 let target = getChecker(parseInt(row) + x, parseInt(col) + y);
-                if (target && (target.isLight != info.isLight || !target.isChecker)) {
+                if (target && !target.isChecker && x != 0 && y != 0) {
                     target.element.classList.add("option");
-                } else if (target.isChecker && x != 0 && y != 0) {
+                } else if (target.isChecker && (target.isLight != info.isLight)) {
                     let jump = getChecker(parseInt(row) + (x * 2), parseInt(col) + (y * 2));
-                    if (jump && (jump.isLight != info.isLight || !jump.isChecker)) {
+                    if (jump && !jump.isChecker) {
                         jump.element.classList.add("option");
                     }
                 }
@@ -84,9 +93,25 @@ document.addEventListener("click", function (event) {
         }
     } else if (event.target.classList.contains("option") && !info.isChecker) {
         var origin = document.querySelector(".checker.option");
-        let originClassName = origin.className;
-        origin.className = event.target.className;
-        event.target.className = originClassName;        
+        if (origin.classList.contains("dark")) {
+            if (row == 0) {
+                event.target.classList.add("king");
+            }
+        } else {
+            if (row == 7) {
+                event.target.classList.add("king");
+            }
+        }
+        ["king", "checker", "light", "dark"].forEach((el) => {
+            if (origin.classList.contains(el)) {
+                origin.classList.remove(el);
+                event.target.classList.add(el);
+            }
+        });
+        Array.from(document.getElementsByClassName("option")).forEach(function (element) {
+            element.classList.remove("option");
+        });
+        turn = (turn ? false : true);
     }
 });
 
