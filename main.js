@@ -261,7 +261,7 @@ function moveChecker(checker, row, col) {
 document.addEventListener("click", function (event) {
     var isTile = event.target.classList.contains("tile");
     if (!isTile) {
-        if (event.target.className == "card") {
+        if (event.target.classList.contains("card")) {
             overlay.style.display = "none";
             let allCheckers = Array.from(document.querySelectorAll(`.${event.target.id}:not(.${event.target.innerText})`));
             let randomChecker = allCheckers[Math.floor(Math.random() * allCheckers.length)];
