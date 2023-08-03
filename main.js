@@ -2,7 +2,20 @@ var modifiers = [
     "Alternate_dimension",
     "Dodge",
     "Explode",
+    "Duplicate",
+    "Quantum"
 ];
+var rare = [
+    4
+]
+var non_rare = modifiers.filter(function (value, index, arr) {
+    return !rare.includes(index);
+});
+
+var RARITY = 0.95;
+var TAKE_MOD_CHANCE = 0.3;
+var MOVE_MOD_CHANCE = 0.1;
+var NUM_MODIFIERS = 3
 
 var turn = true;
 var jumpTurn = false;
@@ -51,6 +64,61 @@ function getChecker(row, col) {
         "isLight": isLight,
         "isDark": isDark,
         "isKing": isKing
+    }
+}
+
+function findNearestEmpty(row, col, color=false) {
+    let element = document.getElementById(row + "-" + col);
+    let allEmpty;
+    if (color) {
+        allEmpty = document.querySelectorAll(`.${color}.tile:not(.checker)`);
+    } else {
+        allEmpty = document.querySelectorAll(".tile:not(.checker)");
+    }
+    
+    let nearestEmpty = false;
+    let minDistance = Number.MAX_SAFE_INTEGER;
+
+    allEmpty.forEach(emptyElement => {
+        const emptyRow = parseInt(emptyElement.id.split("-")[0]);
+        const emptyCol = parseInt(emptyElement.id.split("-")[1]);
+        
+        const distance = Math.abs(emptyRow - row) + Math.abs(emptyCol - col);
+
+        if (distance < minDistance) {
+            nearestEmpty = emptyElement;
+            minDistance = distance;
+        }
+    });
+    console.log(nearestEmpty);
+    return nearestEmpty;
+}
+
+function getModifiers(num, rarity) {
+    const chosen = [];
+    while (chosen.length < num) {
+        const rand = Math.floor(Math.random() * modifiers.length);
+        if (!chosen.includes(rand) && (Math.random() >= rarity || !rare.includes(rand))) {
+            chosen.push(rand);
+        }
+    }
+    return chosen.map(index => modifiers[index]);
+}
+
+function showModifiers(checker) {
+    overlay.style.display = "flex";
+    var chosenModifiers = getModifiers(NUM_MODIFIERS, RARITY);
+    for (let i = 0; i < chosenModifiers.length; i++) {
+        const card = overlay.children[i];
+        const mod = chosenModifiers[i];
+        card.classList.remove("rare");
+        for (let j = 0; j < rare.length; j++) {
+            if (mod === modifiers[rare[j]]) {
+                card.classList.add("rare");
+            }
+        }
+        card.id = checker.classList.contains("light") ? "light" : "dark";
+        card.innerText = mod;
     }
 }
 
@@ -113,16 +181,25 @@ function moveChecker(checker, row, col) {
     }
     ["king", "checker", "light", "dark"].forEach((el) => {
         if (origin.classList.contains(el)) {
-            origin.classList.remove(el);
+            if (!origin.classList.contains("Quantum")) {
+                origin.classList.remove(el);
+            }
             checker.classList.add(el);
         }
     });
     modifiers.forEach((el) => {
         if (origin.classList.contains(el)) {
-            origin.classList.remove(el);
+            if (!origin.classList.contains("Quantum")) {
+                origin.classList.remove(el);
+            }
             checker.classList.add(el);
         }
     });
+    let modified = false;
+    if (Math.random() < MOVE_MOD_CHANCE) {
+        showModifiers(checker);
+        modified = true;
+    }
     jumpTurn = false;
     if (checker.classList.contains("jump")) {
         
@@ -160,26 +237,8 @@ function moveChecker(checker, row, col) {
             }
         }
 
-        if (Math.random() < 0.3) {
-            overlay.style.display = "flex";
-            // 3 random modifiers no repeats
-            
-            var rand = Math.floor(Math.random() * modifiers.length);
-            var rand2 = Math.floor(Math.random() * modifiers.length);
-            var rand3 = Math.floor(Math.random() * modifiers.length);
-            while (rand2 == rand) {
-                rand2 = Math.floor(Math.random() * modifiers.length);
-            }
-            while (rand3 == rand || rand3 == rand2) {
-                rand3 = Math.floor(Math.random() * modifiers.length);
-            }
-            var chosenModifiers = [modifiers[rand], modifiers[rand2], modifiers[rand3]];
-            for (let i = 0; i < chosenModifiers.length; i++) {
-                const card = overlay.children[i];
-                card.id = checker.classList.contains("light") ? "light" : "dark";
-                card.innerText = chosenModifiers[i];
-            }
-
+        if (Math.random() < TAKE_MOD_CHANCE && !modified) {
+            showModifiers(checker);
         }
         if (!jumped.element.classList.contains("Dodge") && !jumped.element.classList.contains("Explode")) {
             jumpTurn = true;
@@ -204,24 +263,44 @@ document.addEventListener("click", function (event) {
     if (!isTile) {
         if (event.target.className == "card") {
             overlay.style.display = "none";
-            let allCheckers = Array.from(document.getElementsByClassName(event.target.id));
+            let allCheckers = Array.from(document.querySelectorAll(`.${event.target.id}:not(.${event.target.innerText})`));
             let randomChecker = allCheckers[Math.floor(Math.random() * allCheckers.length)];
             randomChecker.classList.add(event.target.innerText);
             // apply modifiers
             if (event.target.innerText == "Alternate_dimension") {
                 let originPosition = randomChecker.id.split("-").map((el) => parseInt(el))
-                originPosition[0] = (originPosition[0] == 7 ? originPosition[0] - 1 : originPosition[0] + 1);
-                let modifiedChecker = getChecker(originPosition[0], originPosition[1]);
+                let color = "white";
+                if (randomChecker.classList.contains("white")) {
+                    color = "black";
+                }
+                let modifiedChecker = findNearestEmpty(originPosition[0], originPosition[1], color);
                 ["king", "checker", "light", "dark"].forEach((el) => {
                     if (randomChecker.classList.contains(el)) {
                         randomChecker.classList.remove(el);
-                        modifiedChecker.element.classList.add(el);
+                        modifiedChecker.classList.add(el);
                     }
                 });
                 modifiers.forEach((el) => {
                     if (randomChecker.classList.contains(el)) {
                         randomChecker.classList.remove(el);
-                        modifiedChecker.element.classList.add(el);
+                        modifiedChecker.classList.add(el);
+                    }
+                });
+            } else if (event.target.innerText == "Duplicate") {
+                let originPosition = randomChecker.id.split("-").map((el) => parseInt(el))
+                let color = "white";
+                if (randomChecker.classList.contains("black")) {
+                    color = "black";
+                }
+                let modifiedChecker = findNearestEmpty(originPosition[0], originPosition[1], color);
+                ["king", "checker", "light", "dark"].forEach((el) => {
+                    if (randomChecker.classList.contains(el)) {
+                        modifiedChecker.classList.add(el);
+                    }
+                });
+                modifiers.forEach((el) => {
+                    if (randomChecker.classList.contains(el)) {
+                        modifiedChecker.classList.add(el);
                     }
                 });
             }

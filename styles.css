@@ -79,14 +79,17 @@ body, html {
     cursor: pointer;
 }
 
-.Alternate_dimension::after {
-    box-shadow: inset 0 0 10px 0.25rem #000000;
-}
 .Dodge::after {
-    box-shadow: inset 0 0 10px 0.25rem #fdffa0;
+    box-shadow: inset 0 0 10px 0.25rem #feffcb;
 }
 .Explode::after {
     box-shadow: inset 0 0 10px 0.25rem #8c0e00;
+}
+.Quantum::after {
+    box-shadow: inset 0 0 10px 0.25rem #820093;
+}
+.rare {
+    color: #00ffff;
 }
 
 @media screen and (max-width: 640px){
