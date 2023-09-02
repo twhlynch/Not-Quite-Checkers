@@ -12,7 +12,7 @@ var non_rare = modifiers.filter(function (value, index, arr) {
     return !rare.includes(index);
 });
 
-var RARITY = 0.6;//.95
+var RARITY = 0.9;//.95
 var TAKE_MOD_CHANCE = 0.9; //.3
 var MOVE_MOD_CHANCE = 0.5; //.1
 var NUM_MODIFIERS = 3
