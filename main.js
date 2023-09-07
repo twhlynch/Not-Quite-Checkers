@@ -3,10 +3,12 @@ var modifiers = [
     "Dodge",
     "Explode",
     "Duplicate",
-    "Quantum"
+    "Quantum",
+    "Cloning",
+    "Shuffle"
 ];
 var rare = [
-    4
+    4, 5
 ]
 var non_rare = modifiers.filter(function (value, index, arr) {
     return !rare.includes(index);
@@ -303,7 +305,72 @@ document.addEventListener("click", function (event) {
                         modifiedChecker.classList.add(el);
                     }
                 });
+            } else if (event.target.innerText == "Cloning") {
+                allCheckers.forEach((checker) => {
+                    let originPosition = checker.id.split("-").map((el) => parseInt(el))
+                    let color = "white";
+                    if (checker.classList.contains("black")) {
+                        color = "black";
+                    }
+                    let modifiedChecker = findNearestEmpty(originPosition[0], originPosition[1], color);
+                    ["king", "checker", "light", "dark"].forEach((el) => {
+                        if (checker.classList.contains(el)) {
+                            modifiedChecker.classList.add(el);
+                        }
+                    });
+                    modifiers.forEach((el) => {
+                        if (checker.classList.contains(el)) {
+                            modifiedChecker.classList.add(el);
+                        }
+                    });
+                });
+            } else if (event.target.innerText == "Shuffle") {
+                for (let i = 0; i < 5; i++) {
+                    allCheckers.forEach((checker) => {
+                        let originPosition = checker.id.split("-").map((el) => parseInt(el))
+                        let color = "white";
+                        if (checker.classList.contains("black")) {
+                            color = "black";
+                        }
+                        let modifiedChecker = findNearestEmpty(originPosition[0], originPosition[1], color);
+                        ["king", "checker", "light", "dark"].forEach((el) => {
+                            if (checker.classList.contains(el)) {
+                                modifiedChecker.classList.add(el);
+                                checker.classList.remove(el);
+                            }
+                        });
+                        modifiers.forEach((el) => {
+                            if (checker.classList.contains(el)) {
+                                modifiedChecker.classList.add(el);
+                                checker.classList.remove(el);
+                            }
+                        });
+                    });
+                }
             }
+
+            // check kings
+
+            let notKings = Array.from(document.querySelectorAll(`.checker:not(.king)`));
+            notKings.forEach((checker) => {
+                let checkerPosition = checker.id.split("-").map((el) => parseInt(el))
+                if (checker.classList.contains("light")) {
+                    if (checkerPosition[0] == 7) {
+                        checker.classList.add("king");
+                    }
+                } else {
+                    if (checkerPosition[0] == 0) {
+                        checker.classList.add("king");
+                    }
+                }
+            });
+
+            // TODO: check for full board and modularise
+
+            if (Array.from(document.querySelectorAll(`.checker`)).length > 40) {
+                //
+            }
+
         }
         return false;
     }
