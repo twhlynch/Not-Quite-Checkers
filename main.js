@@ -5,7 +5,8 @@ var modifiers = [
     "Duplicate",
     "Quantum",
     "Cloning",
-    "Shuffle"
+    "Shuffle",
+    "King"
 ];
 var rare = [
     4, 5
@@ -347,6 +348,8 @@ document.addEventListener("click", function (event) {
                         });
                     });
                 }
+            } else if (event.target.innerText == "King") {
+                randomChecker.classList.add("king");
             }
 
             // check kings
