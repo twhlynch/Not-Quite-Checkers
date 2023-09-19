@@ -404,7 +404,7 @@ document.addEventListener("click", function (event) {
                 randomChecker.classList.add("king");
             } else if (event.target.innerText == "Explode") {
                 let currentExplode = parseInt(randomChecker.getAttribute("explode"));
-                currentExplode == NaN && currentExplode = 0;
+                currentExplode == NaN ? currentExplode = 0 : {};
                 randomChecker.setAttribute("explode", Math.min(currentExplode + 1, 10));
             }
 
