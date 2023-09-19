@@ -403,7 +403,7 @@ document.addEventListener("click", function (event) {
             } else if (event.target.innerText == "King") {
                 randomChecker.classList.add("king");
             } else if (event.target.innerText == "Explode") {
-                randomChecker.setAttribute("explode", Math.min(randomChecker.getAttribute("explode") + 1, 10));
+                randomChecker.setAttribute("explode", Math.min(parseInt(randomChecker.getAttribute("explode")) + 1, 10));
             }
 
             // check kings
