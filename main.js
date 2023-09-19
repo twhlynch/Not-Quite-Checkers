@@ -9,7 +9,7 @@ var modifiers = [
     "King"
 ];
 var rare = [
-    4// 4, 5
+    4, 5
 ]
 var non_rare = modifiers.filter(function (value, index, arr) {
     return !rare.includes(index);
