@@ -9,7 +9,7 @@ var modifiers = [
     "King"
 ];
 var rare = [
-    4, 5
+    4// 4, 5
 ]
 var non_rare = modifiers.filter(function (value, index, arr) {
     return !rare.includes(index);
@@ -20,6 +20,8 @@ var TAKE_MOD_CHANCE = 0.9; //.3
 var MOVE_MOD_CHANCE = 0.5; //.1
 var NUM_MODIFIERS = 3
 
+var boardSize = 8;
+
 var turn = true;
 var jumpTurn = false;
 const overlay = document.getElementById("overlay");
@@ -27,31 +29,64 @@ const overlay = document.getElementById("overlay");
 function changeTurns() {
     turn = !turn;
     document.getElementById("board").setAttribute("turn", turn);
+    checkStates();
 }
 
-function createBoard() {
+function checkStates() {
+    let checkerArr = Array.from(document.getElementsByClassName("checker")).map((e) => [e.classList, e.id]);
+    let checkerCount = checkerArr.length;
+    if (checkerCount == 0) {
+        alert("Game Over");
+    } else if (checkerCount == 1) {
+        alert("Game Over");
+    }
+    if (checkerCount >= (boardSize*boardSize*0.5)) {
+        boardSize+=2;
+        createBoard(boardSize);
+        console.log(checkerArr);
+        checkerArr.forEach((e) => {
+            e[0].forEach((eClass) => {
+                let eid = e[1].split("-");
+                let row = parseInt(eid[0]);
+                let col = parseInt(eid[1]);
+                if (eClass != "white" && eClass != "black" && eClass != "tile") {
+                    document.getElementById(`${row+1}-${col+1}`).classList.add(eClass);
+                }
+            });
+        });
+    }
+}
+
+function createBoard(size, checkers=false) {
     // 8x8 board
-    for (var i = 0; i < 8; i++) {
-        for (var j = 0; j < 8; j++) {
+    let board = document.getElementById("board");
+    board.innerHTML = "";
+    board.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    board.style.gridTemplateRows = `repeat(${size}, 1fr)`;
+    for (var i = 0; i < size; i++) {
+        for (var j = 0; j < size; j++) {
             let tile = document.createElement("div");
             tile.setAttribute("id", i + "-" + j);
             tile.classList.add("tile");
-            // checkers
-            if ((i <= 2 || i >= 5) && (i + j) % 2 === 0) {
-                tile.classList.add("checker");
-            }
             // colors
             if ((i + j) % 2 === 0) {
                 tile.classList.add('white');
             } else {
                 tile.classList.add('black');
             }
-            if (i <= 2 && (i + j) % 2 === 0) {
-                tile.classList.add("light");
-            } else if (i >= 5 && (i + j) % 2 === 0) {
-                tile.classList.add("dark");
+            
+            // checkers
+            if (checkers) {
+                if ((i <= 2 || i >= size - 3) && (i + j) % 2 === 0) {
+                    tile.classList.add("checker");
+                }
+                if (i <= 2 && (i + j) % 2 === 0) {
+                    tile.classList.add("light");
+                } else if (i >= size - 3 && (i + j) % 2 === 0) {
+                    tile.classList.add("dark");
+                }
             }
-            document.getElementById("board").appendChild(tile);
+            board.appendChild(tile);
         }
     }
 }
@@ -188,7 +223,7 @@ function moveChecker(checker, row, col) {
             checker.classList.add("king");
         }
     } else {
-        if (row == 7) {
+        if (row == boardSize - 1) {
             checker.classList.add("king");
         }
     }
@@ -324,16 +359,18 @@ document.addEventListener("click", function (event) {
                         color = "black";
                     }
                     let modifiedChecker = findNearestEmpty(originPosition[0], originPosition[1], color);
-                    ["king", "checker", "light", "dark"].forEach((el) => {
-                        if (checker.classList.contains(el)) {
-                            modifiedChecker.classList.add(el);
-                        }
-                    });
-                    modifiers.forEach((el) => {
-                        if (checker.classList.contains(el)) {
-                            modifiedChecker.classList.add(el);
-                        }
-                    });
+                    if (modifiedChecker) {
+                        ["king", "checker", "light", "dark"].forEach((el) => {
+                            if (checker.classList.contains(el)) {
+                                modifiedChecker.classList.add(el);
+                            }
+                        });
+                        modifiers.forEach((el) => {
+                            if (checker.classList.contains(el)) {
+                                modifiedChecker.classList.add(el);
+                            }
+                        });
+                    }
                 });
             } else if (event.target.innerText == "Shuffle") {
                 for (let i = 0; i < 5; i++) {
@@ -368,7 +405,7 @@ document.addEventListener("click", function (event) {
             notKings.forEach((checker) => {
                 let checkerPosition = checker.id.split("-").map((el) => parseInt(el))
                 if (checker.classList.contains("light")) {
-                    if (checkerPosition[0] == 7) {
+                    if (checkerPosition[0] == boardSize - 1) {
                         checker.classList.add("king");
                     }
                 } else {
@@ -377,12 +414,7 @@ document.addEventListener("click", function (event) {
                     }
                 }
             });
-
-            // TODO: check for full board and modularise
-
-            if (Array.from(document.querySelectorAll(`.checker`)).length > 40) {
-                //
-            }
+            checkStates();
 
         }
         return false;
@@ -405,4 +437,4 @@ document.addEventListener("click", function (event) {
 });
 
 
-createBoard();
+createBoard(boardSize, true);
