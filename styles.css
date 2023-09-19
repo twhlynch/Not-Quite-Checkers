@@ -12,6 +12,7 @@ body, html {
     width: 100%;
     height: 100%;
     display: grid;
+    border-radius: 2px;
 }
 .tile {
     width: 5rem;
@@ -164,7 +165,9 @@ body, html {
 }
 [turn="false"] {
     outline: #e36444 solid 5px;
+    box-shadow: 0 0 10px 0.25rem #e36444;
 }
 [turn="true"] {
     outline: #e3b444 solid 5px;
+    box-shadow: 0 0 10px 0.25rem #e3b444;
 }
