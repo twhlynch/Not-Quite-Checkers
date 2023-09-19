@@ -35,7 +35,7 @@ function changeTurns() {
 }
 
 function checkStates() {
-    let checkerArr = Array.from(document.getElementsByClassName("checker")).map((e) => [e.classList, e.id]);
+    let checkerArr = Array.from(document.getElementsByClassName("checker")).map((e) => [e.classList, e.id, e.getAttribute("explode")]);
     let checkerCount = checkerArr.length;
     if (checkerCount == 0) {
         alert("Game Over");
@@ -43,7 +43,7 @@ function checkStates() {
         alert("Game Over");
     }
     if (checkerCount >= (boardSize*boardSize*0.5)) {
-        boardSize+=2;
+        boardSize += 2;
         createBoard(boardSize);
         console.log(checkerArr);
         checkerArr.forEach((e) => {
@@ -55,6 +55,13 @@ function checkStates() {
                     document.getElementById(`${row+1}-${col+1}`).classList.add(eClass);
                 }
             });
+            // explode attr
+            if (e[2] != null) {
+                let eid = e[1].split("-");
+                let row = parseInt(eid[0]);
+                let col = parseInt(eid[1]);
+                document.getElementById(`${row+1}-${col+1}`).setAttribute("explode", e[2]);
+            }
         });
     }
 }
@@ -403,8 +410,10 @@ document.addEventListener("click", function (event) {
             } else if (event.target.innerText == "King") {
                 randomChecker.classList.add("king");
             } else if (event.target.innerText == "Explode") {
-                let currentExplode = parseInt(randomChecker.getAttribute("explode"));
-                currentExplode == NaN ? currentExplode = 0 : {};
+                let currentExplode = 0;
+                if (randomChecker.hasAttribute("explode")) {
+                    currentExplode = parseInt(randomChecker.getAttribute("explode"));
+                }
                 randomChecker.setAttribute("explode", Math.min(currentExplode + 1, 10));
             }
 
