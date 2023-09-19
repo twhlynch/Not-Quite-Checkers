@@ -318,7 +318,13 @@ document.addEventListener("click", function (event) {
     if (!isTile) {
         if (event.target.classList.contains("card")) {
             overlay.style.display = "none";
-            let allCheckers = Array.from(document.querySelectorAll(`.${event.target.id}:not(.${event.target.innerText})`));
+            let selector = `.${event.target.id}`
+            if (event.target.innerText == "Explode") {
+                selector += `:not([explode="10"])`;
+            } else if (["Dodge", "Quantum", "King"].includes(event.target.innerText)) {
+                selector += `:not(.${event.target.innerText})`;
+            }
+            let allCheckers = Array.from(document.querySelectorAll(selector));
             let randomChecker = allCheckers[Math.floor(Math.random() * allCheckers.length)];
             randomChecker.classList.add(event.target.innerText);
             // apply modifiers
