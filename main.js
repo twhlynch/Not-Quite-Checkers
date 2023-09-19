@@ -403,7 +403,9 @@ document.addEventListener("click", function (event) {
             } else if (event.target.innerText == "King") {
                 randomChecker.classList.add("king");
             } else if (event.target.innerText == "Explode") {
-                randomChecker.setAttribute("explode", Math.min(parseInt(randomChecker.getAttribute("explode")) + 1, 10));
+                let currentExplode = parseInt(randomChecker.getAttribute("explode"));
+                currentExplode == NaN && currentExplode = 0;
+                randomChecker.setAttribute("explode", Math.min(currentExplode + 1, 10));
             }
 
             // check kings
