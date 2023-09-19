@@ -1,4 +1,4 @@
-var modifiers = [
+let modifiers = [
     "Alternate_dimension",
     "Dodge",
     "Explode",
@@ -8,24 +8,24 @@ var modifiers = [
     "Shuffle",
     "King"
 ];
-var rare = [
+let rare = [
     4, 5
 ]
-var non_rare = modifiers.filter(function (value, index, arr) {
+let non_rare = modifiers.filter(function (value, index, arr) {
     return !rare.includes(index);
 });
-var classTypes = ["king", "checker", "light", "dark"];
-var allTypes = classTypes.concat(modifiers);
+let classTypes = ["king", "checker", "light", "dark"];
+let allTypes = classTypes.concat(modifiers);
 
-var RARITY = 0.95;//.95
-var TAKE_MOD_CHANCE = 0.9; //.3
-var MOVE_MOD_CHANCE = 0.5; //.1
-var NUM_MODIFIERS = 3
+let RARITY = 0.95;//.95
+let TAKE_MOD_CHANCE = 0.9; //.3
+let MOVE_MOD_CHANCE = 0.5; //.1
+let NUM_MODIFIERS = 3
 
-var boardSize = 8;
+let boardSize = 8;
 
-var turn = true;
-var jumpTurn = false;
+let turn = true;
+let jumpTurn = false;
 const overlay = document.getElementById("overlay");
 
 function changeTurns() {
@@ -72,8 +72,8 @@ function createBoard(size, checkers=false) {
     board.innerHTML = "";
     board.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
     board.style.gridTemplateRows = `repeat(${size}, 1fr)`;
-    for (var i = 0; i < size; i++) {
-        for (var j = 0; j < size; j++) {
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
             let tile = document.createElement("div");
             tile.setAttribute("id", i + "-" + j);
             tile.classList.add("tile");
@@ -101,14 +101,14 @@ function createBoard(size, checkers=false) {
 }
 
 function getChecker(row, col) {
-    var element = document.getElementById(row + "-" + col);
+    let element = document.getElementById(row + "-" + col);
     if (!element) {
         return false;
     }
-    var isChecker = element.classList.contains("checker");
-    var isLight = element.classList.contains("light");
-    var isDark = element.classList.contains("dark");
-    var isKing = element.classList.contains("king");
+    let isChecker = element.classList.contains("checker");
+    let isLight = element.classList.contains("light");
+    let isDark = element.classList.contains("dark");
+    let isKing = element.classList.contains("king");
 
     return {
         "element": element,
@@ -164,7 +164,7 @@ function showModifiers(checker) {
     } else {
         overlay.style.transform = "rotate(0deg)";
     }
-    var chosenModifiers = getModifiers(NUM_MODIFIERS, RARITY);
+    let chosenModifiers = getModifiers(NUM_MODIFIERS, RARITY);
     for (let i = 0; i < chosenModifiers.length; i++) {
         const card = overlay.children[i];
         const mod = chosenModifiers[i];
@@ -226,15 +226,13 @@ function createMoveOptions(info, row, col) {
 
 function moveChecker(checker, row, col) {
     console.log("moveChecker");
-    var origin = document.querySelector(".checker.option");
+    let origin = document.querySelector(".checker.option");
     if (origin.classList.contains("dark")) {
         if (row == 0) {
             checker.classList.add("king");
         }
-    } else {
-        if (row == boardSize - 1) {
-            checker.classList.add("king");
-        }
+    } else if (row == boardSize - 1) {
+        checker.classList.add("king");
     }
     allTypes.forEach((el) => {
         if (origin.classList.contains(el)) {
@@ -258,15 +256,15 @@ function moveChecker(checker, row, col) {
     jumpTurn = false;
     if (checker.classList.contains("jump")) {
         
-        var jumpPos = checker.id.split("-").map((el) => parseInt(el));
-        var originPos = origin.id.split("-").map((el) => parseInt(el));
+        let jumpPos = checker.id.split("-").map((el) => parseInt(el));
+        let originPos = origin.id.split("-").map((el) => parseInt(el));
         // get midpoint
-        var jumpedPos = [(jumpPos[0] + originPos[0]) / 2, (jumpPos[1] + originPos[1]) / 2];
-        var jumped = getChecker(jumpedPos[0], jumpedPos[1]);
+        let jumpedPos = [(jumpPos[0] + originPos[0]) / 2, (jumpPos[1] + originPos[1]) / 2];
+        let jumped = getChecker(jumpedPos[0], jumpedPos[1]);
         
         // take modifiers
         if (jumped.element.classList.contains("Explode")) {
-            var explodePos = jumped.element.id.split("-").map((el) => parseInt(el));
+            let explodePos = jumped.element.id.split("-").map((el) => parseInt(el));
             let intensity = jumped.element.getAttribute("explode");
             if (intensity == 10) {
                 intensity = boardSize;
@@ -321,7 +319,7 @@ function moveChecker(checker, row, col) {
 }
 
 document.addEventListener("click", function (event) {
-    var isTile = event.target.classList.contains("tile");
+    let isTile = event.target.classList.contains("tile");
     if (!isTile) {
         if (event.target.classList.contains("card")) {
             overlay.style.display = "none";
@@ -426,10 +424,8 @@ document.addEventListener("click", function (event) {
                     if (checkerPosition[0] == boardSize - 1) {
                         checker.classList.add("king");
                     }
-                } else {
-                    if (checkerPosition[0] == 0) {
-                        checker.classList.add("king");
-                    }
+                } else if (checkerPosition[0] == 0) {
+                    checker.classList.add("king");
                 }
             });
             checkStates();
@@ -438,10 +434,10 @@ document.addEventListener("click", function (event) {
         return false;
     }
 
-    var id = event.target.id;
-    var row = id.split("-")[0];
-    var col = id.split("-")[1];
-    var info = getChecker(row, col);
+    let { id } = event.target;
+    let row = id.split("-")[0];
+    let col = id.split("-")[1];
+    let info = getChecker(row, col);
     console.log(info);
     if (info.isChecker && info.isLight == turn) {
         if (!jumpTurn) {
