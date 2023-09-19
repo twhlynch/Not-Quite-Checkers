@@ -261,9 +261,10 @@ function moveChecker(checker, row, col) {
         // get midpoint
         let jumpedPos = [(jumpPos[0] + originPos[0]) / 2, (jumpPos[1] + originPos[1]) / 2];
         let jumped = getChecker(jumpedPos[0], jumpedPos[1]);
-        
+        let isDodge = jumped.element.classList.contains("Dodge");
+        let isExplode = jumped.element.classList.contains("Explode");
         // take modifiers
-        if (jumped.element.classList.contains("Explode")) {
+        if (isExplode) {
             let explodePos = jumped.element.id.split("-").map((el) => parseInt(el));
             let intensity = jumped.element.getAttribute("explode");
             if (intensity == 10) {
@@ -285,17 +286,8 @@ function moveChecker(checker, row, col) {
                 }
             }
         }
-
-        if (Math.random() < TAKE_MOD_CHANCE && !modified) {
-            showModifiers(checker);
-        }
-        if (!jumped.element.classList.contains("Dodge") && !jumped.element.classList.contains("Explode")) {
-            jumpTurn = true;
-            changeTurns();
-            createMoveOptions(getChecker(jumpPos[0], jumpPos[1]), row, col);
-        }
         
-        if (!jumped.element.classList.contains("Dodge")) {
+        if (!isDodge) {
             allTypes.forEach((el) => {
                 if (jumped.element.classList.contains(el)) {
                     jumped.element.classList.remove(el);
@@ -306,6 +298,16 @@ function moveChecker(checker, row, col) {
             }
         } else {
             jumped.element.classList.remove("Dodge");
+        }
+        
+        if (!isDodge && !isExplode) {
+            jumpTurn = true;
+            changeTurns();
+            createMoveOptions(getChecker(jumpPos[0], jumpPos[1]), row, col);
+        }
+
+        if (Math.random() < TAKE_MOD_CHANCE && !modified) {
+            showModifiers(checker);
         }
     }
     if (!jumpTurn) {
