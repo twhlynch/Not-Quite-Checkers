@@ -154,3 +154,9 @@ body, html {
         height: 1.5rem;
     }
 }
+[turn="false"] {
+    outline: #e36444 solid 5px;
+}
+[turn="true"] {
+    outline: #e3b444 solid 5px;
+}

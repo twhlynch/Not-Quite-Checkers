@@ -24,6 +24,11 @@ var turn = true;
 var jumpTurn = false;
 const overlay = document.getElementById("overlay");
 
+function changeTurns() {
+    turn = !turn;
+    document.getElementById("board").setAttribute("turn", turn);
+}
+
 function createBoard() {
     // 8x8 board
     for (var i = 0; i < 8; i++) {
@@ -110,6 +115,11 @@ function getModifiers(num, rarity) {
 
 function showModifiers(checker) {
     overlay.style.display = "flex";
+    if (checker.classList.contains("light")) {
+        overlay.style.transform = "rotate(180deg)";
+    } else {
+        overlay.style.transform = "rotate(0deg)";
+    }
     var chosenModifiers = getModifiers(NUM_MODIFIERS, RARITY);
     for (let i = 0; i < chosenModifiers.length; i++) {
         const card = overlay.children[i];
@@ -165,7 +175,7 @@ function createMoveOptions(info, row, col) {
         console.log("options: " + options);
         if (options.length == 0) {
             jumpTurn = false;
-            turn = (turn ? false : true);
+            changeTurns();
         }
     }
 }
@@ -245,7 +255,7 @@ function moveChecker(checker, row, col) {
         }
         if (!jumped.element.classList.contains("Dodge") && !jumped.element.classList.contains("Explode")) {
             jumpTurn = true;
-            turn = (turn ? false : true);
+            changeTurns();
             createMoveOptions(getChecker(jumpPos[0], jumpPos[1]), row, col);
         } else if (jumped.element.classList.contains("Dodge")) {
             jumped.element.classList.remove("Dodge");
@@ -390,7 +400,7 @@ document.addEventListener("click", function (event) {
     } else if (event.target.classList.contains("option") && !info.isChecker) {
         console.log("")
         moveChecker(event.target, row, col);
-        turn = (turn ? false : true);
+        changeTurns();
     }
 });
 
