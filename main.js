@@ -14,6 +14,8 @@ var rare = [
 var non_rare = modifiers.filter(function (value, index, arr) {
     return !rare.includes(index);
 });
+var classTypes = ["king", "checker", "light", "dark"];
+var allTypes = classTypes.concat(modifiers);
 
 var RARITY = 0.95;//.95
 var TAKE_MOD_CHANCE = 0.9; //.3
@@ -227,7 +229,7 @@ function moveChecker(checker, row, col) {
             checker.classList.add("king");
         }
     }
-    ["king", "checker", "light", "dark"].forEach((el) => {
+    allTypes.forEach((el) => {
         if (origin.classList.contains(el)) {
             if (!origin.classList.contains("Quantum")) {
                 origin.classList.remove(el);
@@ -235,14 +237,12 @@ function moveChecker(checker, row, col) {
             checker.classList.add(el);
         }
     });
-    modifiers.forEach((el) => {
-        if (origin.classList.contains(el)) {
-            if (!origin.classList.contains("Quantum")) {
-                origin.classList.remove(el);
-            }
-            checker.classList.add(el);
+    if (origin.getAttribute("explode") != null) {
+        checker.setAttribute("explode", origin.getAttribute("explode"));
+        if (!origin.classList.contains("Quantum")) {
+            origin.removeAttribute("explode");
         }
-    });
+    }
     let modified = false;
     if (Math.random() < MOVE_MOD_CHANCE) {
         showModifiers(checker);
@@ -256,30 +256,26 @@ function moveChecker(checker, row, col) {
         // get midpoint
         var jumpedPos = [(jumpPos[0] + originPos[0]) / 2, (jumpPos[1] + originPos[1]) / 2];
         var jumped = getChecker(jumpedPos[0], jumpedPos[1]);
-        if (!jumped.element.classList.contains("Dodge")) {
-            ["king", "checker", "light", "dark"].forEach((el) => {
-                if (jumped.element.classList.contains(el)) {
-                    jumped.element.classList.remove(el);
-                }
-            });
-        }
+        
         // take modifiers
         if (jumped.element.classList.contains("Explode")) {
             var explodePos = jumped.element.id.split("-").map((el) => parseInt(el));
-            for (let x = -1; x <= 1; x++) {
-                for (let y = -1; y <= 1; y++) {
+            let intensity = jumped.element.getAttribute("explode");
+            if (intensity == 10) {
+                intensity = boardSize;
+            }
+            for (let x = -intensity; x <= intensity; x++) {
+                for (let y = -intensity; y <= intensity; y++) {
                     let target = getChecker(explodePos[0] + x, explodePos[1] + y);
                     if (target && target.isChecker && target.isLight != jumped.isLight) {
-                        ["king", "checker", "light", "dark"].forEach((el) => {
+                        allTypes.forEach((el) => {
                             if (target.element.classList.contains(el)) {
                                 target.element.classList.remove(el);
                             }
                         });
-                        modifiers.forEach((el) => {
-                            if (target.element.classList.contains(el)) {
-                                target.element.classList.remove(el);
-                            }
-                        });
+                        if (target.element.getAttribute("explode") != null) {
+                            target.element.removeAttribute("explode");
+                        }
                     }
                 }
             }
@@ -292,7 +288,18 @@ function moveChecker(checker, row, col) {
             jumpTurn = true;
             changeTurns();
             createMoveOptions(getChecker(jumpPos[0], jumpPos[1]), row, col);
-        } else if (jumped.element.classList.contains("Dodge")) {
+        }
+        
+        if (!jumped.element.classList.contains("Dodge")) {
+            allTypes.forEach((el) => {
+                if (jumped.element.classList.contains(el)) {
+                    jumped.element.classList.remove(el);
+                }
+            });
+            if (jumped.element.getAttribute("explode") != null) {
+                jumped.element.removeAttribute("explode");
+            }
+        } else {
             jumped.element.classList.remove("Dodge");
         }
     }
@@ -322,18 +329,16 @@ document.addEventListener("click", function (event) {
                     color = "black";
                 }
                 let modifiedChecker = findNearestEmpty(originPosition[0], originPosition[1], color);
-                ["king", "checker", "light", "dark"].forEach((el) => {
+                allTypes.forEach((el) => {
                     if (randomChecker.classList.contains(el)) {
                         randomChecker.classList.remove(el);
                         modifiedChecker.classList.add(el);
                     }
                 });
-                modifiers.forEach((el) => {
-                    if (randomChecker.classList.contains(el)) {
-                        randomChecker.classList.remove(el);
-                        modifiedChecker.classList.add(el);
-                    }
-                });
+                if (randomChecker.getAttribute("explode") != null) {
+                    modifiedChecker.setAttribute("explode", randomChecker.getAttribute("explode"));
+                    randomChecker.removeAttribute("explode");
+                }
             } else if (event.target.innerText == "Duplicate") {
                 let originPosition = randomChecker.id.split("-").map((el) => parseInt(el))
                 let color = "white";
@@ -341,16 +346,14 @@ document.addEventListener("click", function (event) {
                     color = "black";
                 }
                 let modifiedChecker = findNearestEmpty(originPosition[0], originPosition[1], color);
-                ["king", "checker", "light", "dark"].forEach((el) => {
+                allTypes.forEach((el) => {
                     if (randomChecker.classList.contains(el)) {
                         modifiedChecker.classList.add(el);
                     }
                 });
-                modifiers.forEach((el) => {
-                    if (randomChecker.classList.contains(el)) {
-                        modifiedChecker.classList.add(el);
-                    }
-                });
+                if (randomChecker.getAttribute("explode") != null) {
+                    modifiedChecker.setAttribute("explode", randomChecker.getAttribute("explode"));
+                }
             } else if (event.target.innerText == "Cloning") {
                 allCheckers.forEach((checker) => {
                     let originPosition = checker.id.split("-").map((el) => parseInt(el))
@@ -360,16 +363,14 @@ document.addEventListener("click", function (event) {
                     }
                     let modifiedChecker = findNearestEmpty(originPosition[0], originPosition[1], color);
                     if (modifiedChecker) {
-                        ["king", "checker", "light", "dark"].forEach((el) => {
+                        allTypes.forEach((el) => {
                             if (checker.classList.contains(el)) {
                                 modifiedChecker.classList.add(el);
                             }
                         });
-                        modifiers.forEach((el) => {
-                            if (checker.classList.contains(el)) {
-                                modifiedChecker.classList.add(el);
-                            }
-                        });
+                        if (checker.getAttribute("explode") != null) {
+                            modifiedChecker.setAttribute("explode", checker.getAttribute("explode"));
+                        }
                     }
                 });
             } else if (event.target.innerText == "Shuffle") {
@@ -381,22 +382,22 @@ document.addEventListener("click", function (event) {
                             color = "black";
                         }
                         let modifiedChecker = findNearestEmpty(originPosition[0], originPosition[1], color);
-                        ["king", "checker", "light", "dark"].forEach((el) => {
+                        allTypes.forEach((el) => {
                             if (checker.classList.contains(el)) {
                                 modifiedChecker.classList.add(el);
                                 checker.classList.remove(el);
                             }
                         });
-                        modifiers.forEach((el) => {
-                            if (checker.classList.contains(el)) {
-                                modifiedChecker.classList.add(el);
-                                checker.classList.remove(el);
-                            }
-                        });
+                        if (checker.getAttribute("explode") != null) {
+                            modifiedChecker.setAttribute("explode", checker.getAttribute("explode"));
+                            checker.removeAttribute("explode");
+                        }
                     });
                 }
             } else if (event.target.innerText == "King") {
                 randomChecker.classList.add("king");
+            } else if (event.target.innerText == "Explode") {
+                randomChecker.setAttribute("explode", Math.min(randomChecker.getAttribute("explode") + 1, 10));
             }
 
             // check kings
