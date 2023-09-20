@@ -15,8 +15,8 @@ body, html {
     border-radius: 2px;
 }
 .tile {
-    width: 5rem;
-    height: 5rem;
+    width: 50px;
+    height: 50px;
     display: grid;
     place-content: center;
     max-width: calc(100vw / 8);
@@ -31,7 +31,7 @@ body, html {
     color: #1e1e1e;
 }
 .option, .jump {
-    box-shadow: inset 0 0 10px 0.25rem #e3b444;
+    box-shadow: inset 0 0 10px 2px #e3b444;
 }
 .checker::after {
     content: "";
@@ -39,8 +39,8 @@ body, html {
     border-radius: 50%;
     top: 0;
     left: 0;
-    width: 4rem;
-    height: 4rem;
+    width: 40px;
+    height: 40px;
 }
 .light::after {
     background-color: #e6bc5b;
@@ -79,7 +79,46 @@ body, html {
 }
 
 .Dodge::after {
-    box-shadow: inset 0 0 10px 0.25rem #feffcb;
+    box-shadow: inset 0 0 10px 2px #feffcb;
+}
+.Explode:hover::before {
+    content: "";
+    position: relative;
+    top: 20px;
+    left: 20px;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+.Explode[explode="1"]:hover::before {
+    box-shadow: 0 0 0 75px #a4210028;
+}
+.Explode[explode="2"]:hover::before {
+    box-shadow: 0 0 0 125px #a4210028;
+}
+.Explode[explode="3"]:hover::before {
+    box-shadow: 0 0 0 175px #a4210028;
+}
+.Explode[explode="4"]:hover::before {
+    box-shadow: 0 0 0 225px #a4210028;
+}
+.Explode[explode="5"]:hover::before {
+    box-shadow: 0 0 0 275px #a4210028;
+}
+.Explode[explode="6"]:hover::before {
+    box-shadow: 0 0 0 325px #a4210028;
+}
+.Explode[explode="7"]:hover::before {
+    box-shadow: 0 0 0 375px #a4210028;
+}
+.Explode[explode="8"]:hover::before {
+    box-shadow: 0 0 0 425px #a4210028;
+}
+.Explode[explode="9"]:hover::before {
+    box-shadow: 0 0 0 475px #a4210028;
+}
+.Explode[explode="10"]:hover::before {
+    box-shadow: 0 0 0 max(100vh, 100vw) #a4210028;
 }
 .Explode::after {
     content: attr(explode);
@@ -95,79 +134,17 @@ body, html {
     content: "";
 }
 .Quantum::after {
-    box-shadow: inset 0 0 10px 0.25rem #820093;
+    box-shadow: inset 0 0 10px 2px #820093;
 }
 .rare {
     color: #00ffff;
 }
 
-@media screen and (max-width: 640px){
-    .tile {
-        width: 4rem;
-        height: 4rem;
-    }
-    .checker::after {
-        width: 3rem;
-        height: 3rem;
-    }
-}
-@media screen and (max-height: 640px){
-    .tile {
-        width: 4rem;
-        height: 4rem;
-    }
-    .checker::after {
-        width: 3rem;
-        height: 3rem;
-    }
-}
-@media screen and (max-height: 512px){
-    .tile {
-        width: 3rem;
-        height: 3rem;
-    }
-    .checker::after {
-        width: 2rem;
-        height: 2rem;
-    }
-}
-
-@media screen and (max-width: 512px){
-    .tile {
-        width: 3rem;
-        height: 3rem;
-    }
-    .checker::after {
-        width: 2rem;
-        height: 2rem;
-    }
-}
-@media screen and (max-height: 384px){
-    .tile {
-        width: 2rem;
-        height: 2rem;
-    }
-    .checker::after {
-        width: 1.5rem;
-        height: 1.5rem;
-    }
-}
-
-@media screen and (max-width: 384px){
-    .tile {
-        width: 2rem;
-        height: 2rem;
-    }
-    .checker::after {
-        width: 1.5rem;
-        height: 1.5rem;
-    }
-}
 [turn="false"] {
     outline: #e36444 solid 5px;
-    box-shadow: 0 0 10px 0.25rem #e36444;
+    box-shadow: 0 0 10px 2px #e36444;
 }
 [turn="true"] {
     outline: #e3b444 solid 5px;
-    box-shadow: 0 0 10px 0.25rem #e3b444;
+    box-shadow: 0 0 10px 2px #e3b444;
 }
