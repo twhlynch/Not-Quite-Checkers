@@ -394,7 +394,10 @@ document.addEventListener("click", function (event) {
                         if (checker.classList.contains("black")) {
                             color = "black";
                         }
-                        let modifiedChecker = findNearestEmpty(originPosition[0], originPosition[1], color);
+                        let randx = Math.floor(Math.random() * boardSize);
+                        let randy = Math.floor(Math.random() * boardSize);
+                        let modifiedChecker = findNearestEmpty(randx, randy, color);
+                        // let modifiedChecker = findNearestEmpty(originPosition[0], originPosition[1], color);
                         allTypes.forEach((el) => {
                             if (checker.classList.contains(el)) {
                                 modifiedChecker.classList.add(el);
