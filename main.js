@@ -24,7 +24,7 @@ let NUM_MODIFIERS = 3
 
 let boardSize = 8;
 
-let multiplier = 0;
+let multiplier = 1;
 let turn = true;
 let jumpTurn = false;
 const overlay = document.getElementById("overlay");
@@ -403,29 +403,27 @@ document.addEventListener("click", function (event) {
                         }
                     });
                 } else if (event.target.innerText == "Shuffle") {
-                    for (let i = 0; i < 5; i++) {
-                        allCheckers.forEach((checker) => {
-                            let originPosition = checker.id.split("-").map((el) => parseInt(el))
-                            let color = "white";
-                            if (checker.classList.contains("black")) {
-                                color = "black";
-                            }
-                            let randx = Math.floor(Math.random() * boardSize);
-                            let randy = Math.floor(Math.random() * boardSize);
-                            let modifiedChecker = findNearestEmpty(randx, randy, color);
-                            // let modifiedChecker = findNearestEmpty(originPosition[0], originPosition[1], color);
-                            allTypes.forEach((el) => {
-                                if (checker.classList.contains(el)) {
-                                    modifiedChecker.classList.add(el);
-                                    checker.classList.remove(el);
-                                }
-                            });
-                            if (checker.getAttribute("explode") != null) {
-                                modifiedChecker.setAttribute("explode", checker.getAttribute("explode"));
-                                checker.removeAttribute("explode");
+                    allCheckers.forEach((checker) => {
+                        let originPosition = checker.id.split("-").map((el) => parseInt(el))
+                        let color = "white";
+                        if (checker.classList.contains("black")) {
+                            color = "black";
+                        }
+                        let randx = Math.floor(Math.random() * boardSize);
+                        let randy = Math.floor(Math.random() * boardSize);
+                        let modifiedChecker = findNearestEmpty(randx, randy, color);
+                        // let modifiedChecker = findNearestEmpty(originPosition[0], originPosition[1], color);
+                        allTypes.forEach((el) => {
+                            if (checker.classList.contains(el)) {
+                                modifiedChecker.classList.add(el);
+                                checker.classList.remove(el);
                             }
                         });
-                    }
+                        if (checker.getAttribute("explode") != null) {
+                            modifiedChecker.setAttribute("explode", checker.getAttribute("explode"));
+                            checker.removeAttribute("explode");
+                        }
+                    });
                 } else if (event.target.innerText == "King") {
                     randomChecker.classList.add("king");
                 } else if (event.target.innerText == "Explode") {
@@ -451,7 +449,7 @@ document.addEventListener("click", function (event) {
                 });
                 checkStates();
             }
-            resetMultiplier();
+            // resetMultiplier();
         }
         return false;
     }
