@@ -148,3 +148,18 @@ body, html {
     outline: #e3b444 solid 5px;
     box-shadow: 0 0 10px 2px #e3b444;
 }
+#autoplay {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: #946646;
+    border: 5px solid #61432d;
+    color: #f7c899;
+    font-size: 16px;
+    text-align: center;
+    line-height: 2rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    cursor: pointer;
+    width: 8rem;
+    height: 2.5rem;
+}

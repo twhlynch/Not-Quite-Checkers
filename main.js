@@ -455,5 +455,35 @@ document.addEventListener("click", function (event) {
     }
 });
 
+function autoPlay(speed=100) {
+    let checkers;
+    let overlay = document.getElementById("overlay");
+    let cards = overlay.querySelectorAll(".card");
+    if (turn) {
+        checkers = document.querySelectorAll(".light.checker");
+    } else {
+        checkers = document.querySelectorAll(".dark.checker");
+    }
+    let checker = checkers[Math.floor(Math.random() * checkers.length)];
+    if (getComputedStyle(overlay).display == "none") {
+        checker.click();
+    }
+    let options = document.querySelectorAll(".option");
+    if (options.length > 0) {
+        let option = options[Math.floor(Math.random() * options.length)];
+        if (getComputedStyle(overlay).display == "none") {
+            option.click();
+        }
+    }
+    if (getComputedStyle(overlay).display == "flex") {
+        let rare = document.querySelectorAll(".rare");
+        let card = cards[Math.floor(Math.random() * cards.length)];
+        if (rare.length > 0) {
+            card = rare[Math.floor(Math.random() * rare.length)];
+        }
+        card.click();
+    }
+    setTimeout(autoPlay, speed);
+}
 
 createBoard(boardSize, true);
