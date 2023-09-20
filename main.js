@@ -239,7 +239,9 @@ function moveChecker(checker, row, col) {
             el.classList.remove("option");
             el.classList.remove("jump");
         });
-        turn = !turn;
+        jumpTurn = false;
+        changeTurns();
+        showModifiers(checker);
         return;
     }
     if (origin.classList.contains("dark")) {
@@ -340,6 +342,7 @@ document.addEventListener("click", function (event) {
     if (!isTile) {
         if (event.target.classList.contains("card")) {
             for (let _ = 0; _ < multiplier; _++) {
+                console.log(event.target.innerText);
                 overlay.style.display = "none";
                 let selector = `.${event.target.id}`
                 if (event.target.innerText == "Explode") {
@@ -402,6 +405,7 @@ document.addEventListener("click", function (event) {
                             }
                         }
                     });
+                    jumpTurn = false;
                 } else if (event.target.innerText == "Shuffle") {
                     allCheckers.forEach((checker) => {
                         let originPosition = checker.id.split("-").map((el) => parseInt(el))
